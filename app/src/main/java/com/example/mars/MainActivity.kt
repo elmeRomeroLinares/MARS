@@ -31,7 +31,9 @@ class MainActivity : AppCompatActivity() {
         mainRecyclerView.layoutManager = GridLayoutManager(this,2)
         mainRecyclerView.addItemDecoration(GridItemDecoration(10,2))
 
-        val photosListAdapter = GridRecyclerAdapter()
+        val photosListAdapter = GridRecyclerAdapter {
+            Toast.makeText(this, "The item press was $it" ,Toast.LENGTH_SHORT).show()
+        }
 
         val call = RetrofitClientInstance().getRetrofitInstance().getPhotos("curiosity","1")
 
