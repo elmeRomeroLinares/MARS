@@ -1,5 +1,6 @@
 package com.example.mars.network
 
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -11,9 +12,11 @@ class RetrofitClientInstance {
     }
 
 
-    fun getRetrofitInstance(): GetMarsPhotos{
+    fun getRetrofitInstance(cache: Cache, networkState: Boolean): GetMarsPhotos{
         val provideClient = OkHttpClient()
             .newBuilder()
+            .cache(cache)
+            .addInterceptor(CacheInterceptor(networkState))
             .addInterceptor(QueryInterceptor())
             .build()
 

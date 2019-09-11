@@ -1,41 +1,50 @@
 package com.example.mars
 
 import android.graphics.Rect
+import android.transition.CircularPropagation
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.example.mars.glide.GlideApp
 import com.example.mars.model.Photo
 import kotlinx.android.synthetic.main.item_list_grid_photo.view.*
 
-class GridRecyclerAdapter(val listener: (Int) -> Unit): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class GridRecyclerAdapter(private var mData: ArrayList<Photo>,
+                          private val listener: (Int) -> Unit): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    companion object {
-        private var mTry = ArrayList<Photo>()
-    }
 
-    //private var mData = ArrayList<Photo>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return NormalViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_list_grid_photo, parent, false))
     }
 
-    override fun getItemCount(): Int = mTry.size
+    override fun getItemCount() = mData.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val normalViewHolder = holder as NormalViewHolder
-        normalViewHolder.bindView(mTry[position], position, listener)
+        normalViewHolder.bindView(mData[position], position, listener)
     }
 
-    fun setPhotosArrayList(arrayListOfPhotos: ArrayList<Photo>){
-        mTry = arrayListOfPhotos
+    fun addItems(items: ArrayList<Photo>) {
+        mData.addAll(items)
         notifyDataSetChanged()
     }
 }
 
 class NormalViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     fun bindView(photoModel: Photo, pos: Int, listener: (Int) -> Unit) {
-        GlideApp.with(itemView.context).load(photoModel.imageSrc).into(itemView.itemIV)
+
+        val circularProgressDrawable = CircularProgressDrawable(itemView.context)
+        circularProgressDrawable.strokeWidth = 5f
+        circularProgressDrawable.centerRadius = 30f
+        circularProgressDrawable.start()
+
+        GlideApp.with(itemView.context)
+            .load(photoModel.imageSrc)
+            .placeholder(circularProgressDrawable).into(itemView.itemIV)
+
+
         itemView.setOnClickListener {
             listener(pos)
         }

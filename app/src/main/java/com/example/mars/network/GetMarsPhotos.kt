@@ -9,5 +9,5 @@ import retrofit2.http.Query
 interface GetMarsPhotos {
 
     @GET("rovers/{vehicle}/photos")
-    fun getPhotos(@Path("vehicle") roverVehicle: String, @Query("page") page: String): Call<PhotosResponse>
+    fun getPhotos(@Path("vehicle") roverVehicle: String = "curiosity", @Query("page") page: String): Call<PhotosResponse>
 }

@@ -1,14 +1,30 @@
 package com.example.mars.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
-class Rover (
-    @SerializedName("landing_date") private val _landingDate: String?,
-    @SerializedName("launch_date") private val _launchDate: String?
-) {
-    val landingDate
-        get() = _landingDate
+data class Rover(
+    @SerializedName("landing_date") val landingDate: String?,
+    @SerializedName("launch_date") val launchDate: String?
+) : Parcelable {
+    constructor(source: Parcel) : this(
+        source.readString(),
+        source.readString()
+    )
 
-    val launchDate
-        get() = _launchDate
+    override fun describeContents() = 0
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(landingDate)
+        writeString(launchDate)
+    }
+
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<Rover> = object : Parcelable.Creator<Rover> {
+            override fun createFromParcel(source: Parcel): Rover = Rover(source)
+            override fun newArray(size: Int): Array<Rover?> = arrayOfNulls(size)
+        }
+    }
 }
